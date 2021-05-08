@@ -598,12 +598,10 @@ int current;
             jDateChooser1.setDate(date);
         } catch (ParseException ex) {
         }
-        if (sv.isGioiTinh()
-                == true) {
+        if (sv.isGioiTinh()== true) {
             rdoNu.setSelected(true);
         }
-        if (sv.isGioiTinh()
-                == false) {
+        if (sv.isGioiTinh() == false) {
             rdoNam.setSelected(true);
         }
         txtDiaChi.setText(sv.getDiaChi());

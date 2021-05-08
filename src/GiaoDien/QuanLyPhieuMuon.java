@@ -5,6 +5,18 @@
  */
 package GiaoDien;
 
+import DAO.PhieuMuonDAO;
+import Helper.DialogHelper;
+import Model.PhieuMuon;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author pvsla
@@ -14,8 +26,158 @@ public class QuanLyPhieuMuon extends javax.swing.JFrame {
     /**
      * Creates new form QuanLyPhieuMuon
      */
+    ArrayList<PhieuMuon> lists;
+    int current;
+
     public QuanLyPhieuMuon() {
         initComponents();
+        setLocationRelativeTo(null);
+        load();
+    }
+
+    public void load() {
+        PhieuMuonDAO pmdao = new PhieuMuonDAO();
+        lists = pmdao.load();
+        DefaultTableModel model = (DefaultTableModel) tblBang.getModel();
+        model.setRowCount(0);
+        for (PhieuMuon pm : lists) {
+            Object[] row = new Object[]{
+                pm.getMaPhieuMuon(),
+                pm.getMaSV(),
+                pm.getMaSach(),
+                pm.getSoLuong(),
+                pm.getNgayMuon(),
+                pm.getNgayHenTra()
+            };
+            model.addRow(row);
+        }
+    }
+
+    public void insert() {
+        PhieuMuon pm = new PhieuMuon();
+        pm.setMaSV(txtMaSV.getText());
+        pm.setMaSach(txtMaSach.getText());
+        pm.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
+        pm.setNgayMuon(jDateChooser1.getDateFormatString());
+        pm.setNgayHenTra(jDateChooser2.getDateFormatString());
+        PhieuMuonDAO pmdao = new PhieuMuonDAO();
+        if (pmdao.insert(pm) > 0) {
+            JOptionPane.showMessageDialog(null, "Thêm Thể Loại Sách thành công");
+        } else {
+            JOptionPane.showMessageDialog(null, "Mã phieu muon [ " + txtMaPhieuMuon.getText() + " ] đã tồn tại không thể thêm");
+        }
+    }
+
+    public void update() {
+        PhieuMuon pm = new PhieuMuon();
+        pm.setMaSV(txtMaSV.getText());
+        pm.setMaSach(txtMaSach.getText());
+        pm.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
+        pm.setNgayMuon(jDateChooser1.getDateFormatString());
+        pm.setNgayHenTra(jDateChooser2.getDateFormatString());
+        PhieuMuonDAO pmdao = new PhieuMuonDAO();
+        if (pmdao.update(pm) < 0) {
+            JOptionPane.showMessageDialog(null, "Cập nhật thành công");
+        } else {
+            JOptionPane.showMessageDialog(null, "Cập nhật thất bại");
+        }
+    }
+
+    public void delete() {
+        int index = tblBang.getSelectedRow();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 Phieu muon trong bảng để xóa", "Thông Báo", 1);
+            return;
+        }
+
+        PhieuMuonDAO pmdao = new PhieuMuonDAO();
+
+        int tk = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa không");
+        if (tk == JOptionPane.YES_OPTION) {
+            if (pmdao.delete(txtMaPhieuMuon.getText())) {
+                JOptionPane.showMessageDialog(this, "Xóa Thể Loại Sách thành công", "Thông Báo", 1);
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi hệ thống", "Thông Báo", 0);
+            }
+        } else {
+            return;
+        }
+    }
+
+    public void clear() {
+        txtMaPhieuMuon.setText(null);
+        txtMaSV.setText(null);
+        txtMaSach.setText(null);
+        txtSoLuong.setText(null);
+        btnThem.setEnabled(true);
+    }
+
+    public void display() throws ParseException {
+        DefaultTableModel model = (DefaultTableModel) tblBang.getModel();
+        PhieuMuon pm = lists.get(current);
+        txtMaPhieuMuon.setText(pm.getMaPhieuMuon());
+        txtMaSV.setText(pm.getMaSV());
+        txtMaSach.setText(pm.getMaSach());
+        txtSoLuong.setText(String.valueOf(pm.getSoLuong()));
+        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse((String) model.getValueAt(current, 4));
+        jDateChooser1.setDate(date1);
+        Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse((String) model.getValueAt(current, 5));
+        jDateChooser2.setDate(date2);
+
+    }
+
+    public void setStatus(boolean insertable) {
+        txtMaPhieuMuon.setEditable(insertable);
+        btnThem.setEnabled(!insertable);
+        btnSua.setEnabled(!insertable);
+        btnXoa.setEnabled(!insertable);
+    }
+
+    public void search() {
+        //lay masv
+        String searchText = txtSearch.getText();
+
+        PhieuMuonDAO pmdao = new PhieuMuonDAO();
+        lists = pmdao.SearchMaSV(searchText);
+        DefaultTableModel model = (DefaultTableModel) tblBang.getModel();
+        model.setRowCount(0);
+        for (PhieuMuon pm : lists) {
+            Object[] row = new Object[]{
+                pm.getMaPhieuMuon(),
+                pm.getMaSV(),
+                pm.getMaSach(),
+                pm.getSoLuong(),
+                pm.getNgayMuon(),
+                pm.getNgayHenTra()
+            };
+            model.addRow(row);
+        }
+    }
+
+    public boolean valiform() {
+        if (txtSoLuong.getText().equals("")) {
+
+        }
+        int soluong = Integer.parseInt(txtSoLuong.getText());
+        if (txtMaSV.getText().equals("")) {
+            txtMaSV.requestFocus();
+            DialogHelper.alert(null, "Chưa nhập mã sinh viên");
+            return false;
+        } else if (txtMaSach.getText().equals("")) {
+            txtMaSach.requestFocus();
+            DialogHelper.alert(null, "Chưa nhập mã sách");
+            return false;
+        } else if (txtSoLuong.getText().equals("")) {
+            txtSoLuong.requestFocus();
+            DialogHelper.alert(null, "Chưa nhập số lượng");
+            return false;
+        } else if (Integer.parseInt(txtSoLuong.getText()) > 3 || Integer.parseInt(txtSoLuong.getText()) < 1) {
+            txtSoLuong.requestFocus();
+            DialogHelper.alert(null, "Bạn đã nhập quá số lượng");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -82,10 +244,6 @@ public class QuanLyPhieuMuon extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(31, 31, 31)
-                        .addComponent(txtMaSV))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
@@ -96,45 +254,47 @@ public class QuanLyPhieuMuon extends javax.swing.JFrame {
                             .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                             .addComponent(jDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
                         .addGap(18, 18, 18)
-                        .addComponent(txtMaPhieuMuon))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(57, 57, 57)
-                        .addComponent(txtMaSach)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtMaSach)
+                            .addComponent(txtMaPhieuMuon)
+                            .addComponent(txtMaSV))))
                 .addGap(24, 24, 24))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtMaPhieuMuon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtMaSach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(txtMaPhieuMuon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtMaSach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(6, 6, 6)
                         .addComponent(jLabel6))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel7)
                     .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         btnQuanLy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Hinh/Home.png"))); // NOI18N
@@ -180,7 +340,7 @@ public class QuanLyPhieuMuon extends javax.swing.JFrame {
             }
         });
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tìm Kiếm", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 13))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tìm Kiếm (Theo Mã Sinh Viên, Mã Sách)", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 13))); // NOI18N
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Hinh/Search.png"))); // NOI18N
 
@@ -315,18 +475,41 @@ public class QuanLyPhieuMuon extends javax.swing.JFrame {
 
     private void btnMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoiActionPerformed
         // TODO add your handling code here:
+        clear();
     }//GEN-LAST:event_btnMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
+        if (valiform() == true) {
+            insert();
+            load();
+            txtMaPhieuMuon.setText("");
+            txtMaSV.setText("");
+            txtMaSach.setText("");
+            txtSoLuong.setText("");
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
+        if (valiform() == true) {
+            update();
+            load();
+            txtMaPhieuMuon.setText("");
+            txtMaSV.setText("");
+            txtMaSach.setText("");
+            txtSoLuong.setText("");
+        }
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         // TODO add your handling code here:
+        delete();
+        load();
+        txtMaPhieuMuon.setText("");
+        txtMaSV.setText("");
+        txtMaSach.setText("");
+        txtSoLuong.setText("");
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInActionPerformed
@@ -335,14 +518,26 @@ public class QuanLyPhieuMuon extends javax.swing.JFrame {
 
     private void btnQuanLyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuanLyActionPerformed
         // TODO add your handling code here:
+        QuanLyUI qlui = new QuanLyUI();
+        qlui.setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnQuanLyActionPerformed
 
     private void tblBangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBangMouseClicked
         // TODO add your handling code here:
+        current = tblBang.getSelectedRow();
+        try {
+            display();
+        } catch (ParseException ex) {
+            Logger.getLogger(QuanLyPhieuMuon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        setStatus(false);
+        btnThem.setEnabled(false);
     }//GEN-LAST:event_tblBangMouseClicked
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
         // TODO add your handling code here:
+        search();
     }//GEN-LAST:event_txtSearchKeyReleased
 
     /**

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4e74c6b8-5347-49b2-992e-b531bf3e00b2">
+	<property name="ireport.zoom" value="2.3579476910000023"/>
+	<property name="ireport.x" value="401"/>
+	<property name="ireport.y" value="13"/>
+	<queryString>
+		<![CDATA[SELECT
+     Admin."Username" AS Admin_Username,
+     Admin."Password" AS Admin_Password,
+     Admin."Ten" AS Admin_Ten,
+     PhieuMuon."MaPhieuMuon" AS PhieuMuon_MaPhieuMuon,
+     PhieuMuon."MaSV" AS PhieuMuon_MaSV,
+     PhieuMuon."MaSach" AS PhieuMuon_MaSach,
+     PhieuMuon."SoLuong" AS PhieuMuon_SoLuong,
+     PhieuMuon."NgayMuon" AS PhieuMuon_NgayMuon,
+     PhieuMuon."NgayHenTra" AS PhieuMuon_NgayHenTra,
+     Sach."MaSach" AS Sach_MaSach,
+     Sach."TenSach" AS Sach_TenSach,
+     Sach."MaTheLoai" AS Sach_MaTheLoai,
+     Sach."TacGia" AS Sach_TacGia,
+     Sach."SoLuong" AS Sach_SoLuong,
+     Sach."NXB" AS Sach_NXB,
+     Sach."NgayNhap" AS Sach_NgayNhap,
+     Sach."NDTT" AS Sach_NDTT,
+     Sach."Hinh" AS Sach_Hinh,
+     SinhVien."MaSV" AS SinhVien_MaSV,
+     SinhVien."Password" AS SinhVien_Password,
+     SinhVien."HoTen" AS SinhVien_HoTen,
+     SinhVien."NgaySinh" AS SinhVien_NgaySinh,
+     SinhVien."GioiTinh" AS SinhVien_GioiTinh,
+     SinhVien."DiaChi" AS SinhVien_DiaChi,
+     SinhVien."SDT" AS SinhVien_SDT,
+     SinhVien."Email" AS SinhVien_Email,
+     TheLoaiSach."MaTheLoai" AS TheLoaiSach_MaTheLoai,
+     TheLoaiSach."TenTheLoai" AS TheLoaiSach_TenTheLoai,
+     TheLoaiSach."ViTri" AS TheLoaiSach_ViTri
+FROM
+     "dbo"."Sach" Sach INNER JOIN "dbo"."PhieuMuon" PhieuMuon ON Sach."MaSach" = PhieuMuon."MaSach"
+     INNER JOIN "dbo"."SinhVien" SinhVien ON PhieuMuon."MaSV" = SinhVien."MaSV"
+     INNER JOIN "dbo"."TheLoaiSach" TheLoaiSach ON Sach."MaTheLoai" = TheLoaiSach."MaTheLoai",
+     "dbo"."Admin" Admin]]>
+	</queryString>
+	<field name="Admin_Username" class="java.lang.String"/>
+	<field name="Admin_Password" class="java.lang.String"/>
+	<field name="Admin_Ten" class="java.lang.String"/>
+	<field name="PhieuMuon_MaPhieuMuon" class="java.lang.Integer"/>
+	<field name="PhieuMuon_MaSV" class="java.lang.String"/>
+	<field name="PhieuMuon_MaSach" class="java.lang.String"/>
+	<field name="PhieuMuon_SoLuong" class="java.lang.Integer"/>
+	<field name="PhieuMuon_NgayMuon" class="java.sql.Date"/>
+	<field name="PhieuMuon_NgayHenTra" class="java.sql.Date"/>
+	<field name="Sach_MaSach" class="java.lang.String"/>
+	<field name="Sach_TenSach" class="java.lang.String"/>
+	<field name="Sach_MaTheLoai" class="java.lang.String"/>
+	<field name="Sach_TacGia" class="java.lang.String"/>
+	<field name="Sach_SoLuong" class="java.lang.Integer"/>
+	<field name="Sach_NXB" class="java.lang.String"/>
+	<field name="Sach_NgayNhap" class="java.sql.Date"/>
+	<field name="Sach_NDTT" class="java.lang.String"/>
+	<field name="Sach_Hinh" class="java.lang.String"/>
+	<field name="SinhVien_MaSV" class="java.lang.String"/>
+	<field name="SinhVien_Password" class="java.lang.String"/>
+	<field name="SinhVien_HoTen" class="java.lang.String"/>
+	<field name="SinhVien_NgaySinh" class="java.sql.Date"/>
+	<field name="SinhVien_GioiTinh" class="java.lang.Boolean"/>
+	<field name="SinhVien_DiaChi" class="java.lang.String"/>
+	<field name="SinhVien_SDT" class="java.lang.String"/>
+	<field name="SinhVien_Email" class="java.lang.String"/>
+	<field name="TheLoaiSach_MaTheLoai" class="java.lang.String"/>
+	<field name="TheLoaiSach_TenTheLoai" class="java.lang.String"/>
+	<field name="TheLoaiSach_ViTri" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="145" y="13" width="271" height="43" uuid="6fab1864-7bce-4c15-a432-0a4adb602dad"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[PHIẾU MƯỢN SÁCH]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="1" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<staticText>
+				<reportElement x="23" y="0" width="100" height="20" uuid="659924a3-c2e9-4a4e-b690-9ac6d80c7d53"/>
+				<text><![CDATA[Mã Phiếu Mượn:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="23" y="33" width="100" height="20" uuid="8db26c70-7df5-420f-a7f0-099154b1eb99"/>
+				<text><![CDATA[Mã Sinh Viên:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="23" y="63" width="100" height="20" uuid="1e9c0274-52ef-4066-9355-039430a97e7d"/>
+				<text><![CDATA[Tên Sinh Viên]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="23" y="93" width="100" height="20" uuid="7befd67a-3c80-4064-b2b7-dd828b6b7660"/>
+				<text><![CDATA[Số Điện Thoại]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="297" y="0" width="100" height="20" uuid="def016df-f4ac-4629-8a6e-41bf86a7cabc"/>
+				<text><![CDATA[Ngày Mượn:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="297" y="33" width="100" height="20" uuid="9604faac-64d2-428a-93c5-0c029d674968"/>
+				<text><![CDATA[Tên Sách:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="297" y="63" width="100" height="20" uuid="8b0484c0-1acc-46cf-b71b-6f823f990938"/>
+				<text><![CDATA[Số Lượng:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="297" y="93" width="100" height="20" uuid="d6f20882-0e38-47b2-9f1c-55d137b675d0"/>
+				<text><![CDATA[Ngày Trả:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="123" y="0" width="100" height="20" uuid="8e6b072d-7d53-4327-ac38-55780aab1410"/>
+				<textFieldExpression><![CDATA[$F{PhieuMuon_MaPhieuMuon}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="123" y="33" width="100" height="20" uuid="d1d62071-6740-44d3-a58c-f5abf14c7e77"/>
+				<textFieldExpression><![CDATA[$F{SinhVien_MaSV}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="123" y="63" width="100" height="20" uuid="2a2c4f5c-7b67-403b-9e66-f8287018864a"/>
+				<textFieldExpression><![CDATA[$F{SinhVien_HoTen}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="123" y="93" width="100" height="20" uuid="8531e598-4dd9-4d77-96dc-a45366a723c3"/>
+				<textFieldExpression><![CDATA[$F{SinhVien_SDT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="397" y="0" width="100" height="20" uuid="07f545d6-3bb2-4cb0-8311-9a3f540daab2"/>
+				<textFieldExpression><![CDATA[$F{PhieuMuon_NgayMuon}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="397" y="33" width="100" height="20" uuid="2c620d31-f920-419d-8078-a6a97e968e18"/>
+				<textFieldExpression><![CDATA[$F{Sach_TenSach}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="397" y="63" width="100" height="20" uuid="7a893edf-4bbe-4cf9-b986-302e9be4ad7d"/>
+				<textFieldExpression><![CDATA[$F{Sach_SoLuong}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="397" y="93" width="100" height="20" uuid="fd1706df-eda5-4128-827a-2be38d496ee5"/>
+				<textFieldExpression><![CDATA[$F{PhieuMuon_NgayHenTra}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

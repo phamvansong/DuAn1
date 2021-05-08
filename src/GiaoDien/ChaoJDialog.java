@@ -71,7 +71,6 @@ public class ChaoJDialog extends javax.swing.JFrame {
         setUndecorated(true);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Hinh/zzzzz.jpg"))); // NOI18N
 
         jProgressBar1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jProgressBar1.setStringPainted(true);

@@ -12,6 +12,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
+
 
 /**
  *
@@ -105,5 +112,16 @@ public class PhieuMuonDAO extends Connect {
             ex.printStackTrace();
         }
         return lists;
+    }
+    public void inphieumuon(int maPhieu){
+        try {
+            Hashtable map = new Hashtable();
+            JasperReport report = JasperCompileManager.compileReport("src/print/XuatPhieuMuon.jrxml");
+            map.put("MaPhieuMuon", maPhieu);
+            JasperPrint p = JasperFillManager.fillReport(report,  map, con );
+            JasperViewer.viewReport(p, false);
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
     }
 }

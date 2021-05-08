@@ -66,6 +66,26 @@ insert into SinhVien values ('PH00001','123',N'Đặng Tuấn Anh','1/12/2001',0
 							('PH00009','123',N'Phạm Văn Đạt','11/20/1995',0,N'Nha Trang','09312398754','dat09@fpt.edu.vn'),
 							('PH00010','123',N'Trịnh Diệp Lam','12/29/1999',1,N'Hải Dương','0994738999','dieplam@fpt.edu.vn'),
 							('PH00011','123',N'Huỳnh Như','11/18/1997',1,N'Hải Phòng','0994977799','nhu@fpt.edu.vn')
+insert into SinhVien values ('PH00012','123',N'Đặng Tiến Đông','1/12/2001',0,N'Hà Nội','0943451253','tiendong@fpt.edu.vn'),
+							('PH00013','123',N'Huỳnh Tiểu Bảo','2/22/2002',1,N'Cao Bằng','0991767898','tieubao@fpt.edu.vn'),
+							('PH00014','123',N'Nguyễn Thùy Linh','6/15/1996',1,N'Sơn La','0945215667','thuy1linh@fpt.edu.vn'),
+							('PH00015','123',N'Cao Bá Trường','7/21/2000',0,N'Quảng Ninh','0965126578','batruong@fpt.edu.vn'),
+							('PH00016','123',N'Nguyễn Phú Minh','8/19/1998',0,N'Quảng Nam','0909336789','phuminh@fpt.edu.vn'),
+							('PH00017','123',N'Bùi Thị Quỳnh','9/25/1999',1,N'Huế','09375849313','thiquynh@fpt.edu.vn'),
+							('PH00018','123',N'Phan Hùng Anh','10/16/1997',0,N'Nghệ An','0933718273','hunganh2@fpt.edu.vn'),
+							('PH00019','123',N'Nguyễn Văn Đạt','11/20/1995',0,N'Nha Trang','09311298754','dat090@fpt.edu.vn'),
+							('PH00020','123',N'Ngọc Diệp Lan','12/29/1999',1,N'Hải Dương','0994567999','dieplan@fpt.edu.vn'),
+							('PH00021','123',N'Huỳnh Như Ngọc','11/18/1997',1,N'Hải Phòng','0994557799','nhungoc@fpt.edu.vn')
+insert into SinhVien values ('PH00022','123',N'Đặng Tiến Nam','1/12/2001',0,N'Hà Nội','0943455253','tiennam@fpt.edu.vn'),
+							('PH00023','123',N'Huỳnh Tuất','2/22/2002',1,N'Cao Bằng','0991765898','tuat@fpt.edu.vn'),
+							('PH00024','123',N'Nguyễn Linh','6/15/1996',1,N'Sơn La','0945255667','linh@fpt.edu.vn'),
+							('PH00025','123',N'Bùi Trường','7/21/2000',0,N'Quảng Ninh','0965146578','truong@fpt.edu.vn'),
+							('PH00026','123',N'Nguyễn Phú Giáp','8/19/1998',0,N'Quảng Nam','0904336789','phugiap@fpt.edu.vn'),
+							('PH00027','123',N'Bùi Thị Yến','9/25/1999',1,N'Huế','09375849213','thiyen@fpt.edu.vn'),
+							('PH00028','123',N'Phan Hùng Quách','10/16/1997',0,N'Nghệ An','0936718273','hungquach@fpt.edu.vn'),
+							('PH00029','123',N'Phạm Văn Đạt','11/20/1995',0,N'Nha Trang','09311798754','dat0910@fpt.edu.vn'),
+							('PH00030','123',N'Ngọc Diệp Vấn','12/29/1999',1,N'Hải Dương','0994568899','diepvan@fpt.edu.vn'),
+							('PH00031','123',N'Huỳnh Như Ngọc Anh','11/18/1997',1,N'Hải Phòng','0991557799','nhungocanh@fpt.edu.vn')
 select * from SinhVien
 --Chèn dữ liệu bảng thể loại sách
 insert into TheLoaiSach values ('MTL0001',N'Kinh dị',N'Tủ số 1'),
@@ -78,6 +98,16 @@ insert into TheLoaiSach values ('MTL0001',N'Kinh dị',N'Tủ số 1'),
 								('MTL0008',N'Nhiếp ảnh',N'Tủ số 6'),
 								('MTL0009',N'Truyện',N'Tủ số 6'),
 								('MTL00010',N'Hôn nhân',N'Tủ số 6')
+insert into TheLoaiSach values ('MTL00021',N'Thiếu Nhi',N'Tủ số 7'),
+								('MTL00012',N'Khoa học',N'Tủ số 8'),
+								('MTL00013',N'Mỹ Thuật',N'Tủ số 8'),
+								('MTL00014',N'Thẩm Mỹ',N'Tủ số 9'),
+								('MTL00015',N'Kỹ Năng Làm Việc',N'Tủ số 9'),
+								('MTL00016',N'Đạo Đức',N'Tủ số 9'),
+								('MTL00017',N'Viễn Thông',N'Tủ số 3'),
+								('MTL00018',N'Cơ Khí',N'Tủ số 1'),
+								('MTL00019',N'Làm Đẹp',N'Tủ số 4'),
+insert into TheLoaiSach values('MTL00020',N'Giáo Dục',N'Tủ số 5')
 select * from TheLoaiSach
 --Chèn dữ liệu bảng sách
 insert into Sach values ('MS0001',N'Im lặng','MTL0001',N'Phèn',8,N'NXB1','01/12/2021',N'bình thường','ms1.jpg'),
@@ -107,6 +137,21 @@ insert into PhieuMuon values ('PH00001','MS0001','1','3/1/2021','3/11/2021'),
 							('PH00008','MS0006',4,'3/12/2021','3/22/2021'),
 							('PH00009','MS0003',4,'3/14/2021','3/24/2021'),
 							('PH00002','MS0001',1,'3/19/2021','3/29/2021')
+insert into PhieuMuon values ('PH00011','MS0001','1','3/1/2021','3/11/2021'),
+							('PH00012','MS0002',1,'3/1/2021','3/11/2021'),
+							('PH00013','MS0003',1,'3/2/2021','3/12/2021'),
+							('PH00014','MS0004',1,'3/2/2021','3/12/2021'),
+							('PH00015','MS0005',2,'3/3/2021','3/13/2021'),
+							('PH00016','MS0006',1,'3/4/2021','3/14/2021'),
+							('PH00017','MS0007',2,'3/5/2021','3/15/2021'),
+							('PH00018','MS0008',2,'3/6/2021','3/17/2021'),
+							('PH00019','MS0009',2,'3/8/2021','3/18/2021'),
+							('PH00010','MS0007',3,'3/7/2021','3/17/2021'),
+							('PH00023','MS0003',3,'3/6/2021','3/16/2021'),
+							('PH00015','MS0002',3,'3/11/2021','3/21/2021'),
+							('PH00018','MS0006',4,'3/12/2021','3/22/2021'),
+							('PH00019','MS0003',4,'3/14/2021','3/24/2021'),
+							('PH00012','MS0001',1,'3/19/2021','3/29/2021')
 Select * from PhieuMuon
 Select * from Sach where TenSach like '%S%'
 

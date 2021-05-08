@@ -5,17 +5,232 @@
  */
 package GiaoDien;
 
+import DAO.SachDAO;
+import Helper.DialogHelper;
+import Model.Sach;
+import java.awt.Image;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author pvsla
  */
 public class QuanLySach extends javax.swing.JFrame {
 
+    int i = 0;
+    SachDAO sdao = new SachDAO();
+    int index = 0;
+    DefaultTableModel model = new DefaultTableModel();
+    List<Sach> list = new ArrayList();
+    private JFileChooser jc;
+
     /**
      * Creates new form QuanLySach
      */
     public QuanLySach() {
         initComponents();
+        loadlist();
+        intitTable();
+        load();
+        setLocationRelativeTo(null);
+        jc = new JFileChooser();
+        btnSua.setEnabled(false);
+        btnThem.setEnabled(false);
+        btnXoa.setEnabled(false);
+    }
+    boolean flag = false;
+
+    void intitTable() {
+        String[] colums = new String[]{
+            "Mã sách", "Tên sách", "Mã Thể Loại", "tác Giả", "Số Lượng", "NXB", "Ngày Nhập", "Nội Dung", "Hình"
+        };
+        model.setColumnIdentifiers(colums);
+        tblBang.setModel(model);
+    }
+
+    void check() {
+        if (txtMaSach.getText().length() > 10 || txtMaSach.getText().length() < 6) {
+            JOptionPane.showMessageDialog(this, "Mã sách không hợp lệ!!!");
+        } else if (txtTenSach.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this, "Tên Sách không được bỏ trống!!!");
+        } else if (lblHinh.getIcon() == null) {
+            JOptionPane.showMessageDialog(this, "Bạn chưa chọn hình!!!");
+        } else if (txtSoLuong.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this, "Số lượng không được bỏ trống!!!");
+        } else if (txtNXB.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this, "NXB không được bỏ trống!!!");
+        } else if (txtTacGia.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this, "Tác Giả không được bỏ trống!!!");
+        } else {
+            flag = true;
+        }
+    }
+
+    void setModel(Sach model) {
+        txtMaSach.setText(model.getMaSach());
+        txtTenSach.setText(model.getTenSach());
+        txtNXB.setText(model.getNxb());
+        txtNoiDung.setText(model.getNdtt());
+        txtSoLuong.setText(String.valueOf(model.getSoLuong()));
+        txtTacGia.setText(model.getTacGia());
+        lblHinh.setToolTipText(model.getHinh());
+        if (model.getHinh() != null) {
+            ImageIcon image = new ImageIcon("src\\Duan1\\image\\" + model.getHinh());
+            Image im = image.getImage();
+            ImageIcon icon = new ImageIcon(im.getScaledInstance(lblHinh.getWidth(), lblHinh.getHeight(), im.SCALE_SMOOTH));
+            lblHinh.setIcon(icon);
+        }
+    }
+
+    Sach getModel() {
+        Sach sach = new Sach();
+        sach.setMaSach(txtMaSach.getText());
+        sach.setTenSach(txtTenSach.getText());
+        sach.setNxb(txtNXB.getText());
+        sach.setMaTheLoai(txtmatheloai.getText());
+        sach.setTacGia(txtTacGia.getText());
+        sach.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
+        sach.setNdtt(txtNoiDung.getText());
+        sach.setNgayNhap(new SimpleDateFormat("yyyy-MM-dd").format(jDateChooser1.getDate()));
+        System.out.println(lblHinh.getToolTipText());
+        if (jc.getSelectedFile() != null) {
+            sach.setHinh(jc.getSelectedFile().getAbsolutePath());
+        } else {
+            sach.setHinh(null);
+        }
+        return sach;
+    }
+
+    public void Uphinh() {
+        int result = jc.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            ImageIcon imageIcon = new ImageIcon(jc.getSelectedFile().getAbsolutePath());
+//            JFileChooser chooser = new JFileChooser("C:\\Downloads\\imgDA1\\");
+            Image image = imageIcon.getImage().getScaledInstance(lblHinh.getWidth(), lblHinh.getHeight(), Image.SCALE_SMOOTH);
+            lblHinh.setIcon(new ImageIcon(image));
+        }
+    }
+    
+
+    void setStatus(boolean insertable) {
+        txtTenSach.setEditable(insertable);
+        btnThem.setEnabled(insertable);
+        btnSua.setEnabled(!insertable);
+        btnXoa.setEnabled(!insertable);
+    }
+
+    void clear() {
+        this.setModel(new Sach());
+        this.setStatus(true);
+    }
+
+    void insert() {
+        Sach model = getModel();
+        if (sdao.insert(model) != -1) {
+            this.loadlist();
+            this.clear();
+            DialogHelper.alert(this, "Thêm mới thành công");
+        } else {
+            DialogHelper.alert(this, "Thêm mới thất bại");
+        }
+    }
+
+    void update() {
+        Sach model = getModel();
+        if (sdao.update(model) != -1) {
+            this.loadlist();
+            DialogHelper.alert(this, "Cập nhật thành công");
+        } else {
+            DialogHelper.alert(this, "Cập nhật thất bại");
+        }
+    }
+
+    void delete() {
+        if (DialogHelper.confirm(this, "Bạn thực sự muốn xóa loại sách này?")) {
+            String masach = txtMaSach.getText();
+            if (sdao.delete(masach) == true) {
+                this.loadlist();
+                this.clear();
+                txtmatheloai.setText("");
+                txtSoLuong.setText("");
+                lblHinh.setIcon(null);
+                txtMaSach.setEnabled(true);
+                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+            } else {
+                DialogHelper.alert(this, "Xóa thất bại");
+            }
+        }
+    }
+
+    public void MouseClicked(int row) {
+        if (row < 0) {
+            return;
+        }
+        txtMaSach.setText(tblBang.getValueAt(row, 0).toString());
+        txtTenSach.setText(tblBang.getValueAt(row, 1).toString());
+        txtTacGia.setText(tblBang.getValueAt(row, 3).toString());
+        txtSoLuong.setText(tblBang.getValueAt(row, 4).toString());
+        txtNXB.setText(tblBang.getValueAt(row, 5).toString());
+        txtmatheloai.setText(tblBang.getValueAt(row, 2).toString());
+        ImageIcon image = new ImageIcon(tblBang.getValueAt(row, 8).toString());
+        Image im = image.getImage();
+        ImageIcon icon = new ImageIcon(im.getScaledInstance(lblHinh.getWidth(), lblHinh.getHeight(), Image.SCALE_SMOOTH));
+        lblHinh.setIcon(icon);
+        try {
+            tblBang.getSelectedRow();
+            Date date = new SimpleDateFormat("yyyy-mm-dd").parse((String) model.getValueAt(row, 6));
+            jDateChooser1.setDate(date);
+        } catch (Exception e) {
+        }
+        txtNoiDung.setText(tblBang.getValueAt(row, 7).toString());
+    }
+
+    void loadlist() {
+        list.clear();
+        list = sdao.load();
+    }
+
+    void load() {
+        model.setRowCount(0);
+        for (Sach sach : list) {
+            model.addRow(new Object[]{
+                sach.getMaSach(),
+                sach.getTenSach(),
+                sach.getMaTheLoai(),
+                sach.getTacGia(),
+                sach.getSoLuong(),
+                sach.getNxb(),
+                sach.getNgayNhap(),
+                sach.getNdtt(),
+                sach.getHinh()
+            });
+        }
+    }
+
+    void timKiemTheoTen() {
+        list.clear();
+        try {
+            String keyword = txtSearch.getText();
+            List<Sach> listDanhSach = sdao.load();
+            for (Sach sach : listDanhSach) {
+                if (sach.getTenSach().toLowerCase().contains(keyword.toLowerCase())) {
+                    list.add(sach);
+                }
+            }
+            System.out.println(listDanhSach.size());
+            load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn dữ liệu!");
+        }
     }
 
     /**
@@ -42,13 +257,13 @@ public class QuanLySach extends javax.swing.JFrame {
         txtTenSach = new javax.swing.JTextField();
         txtNXB = new javax.swing.JTextField();
         txtTacGia = new javax.swing.JTextField();
-        cboTheLoai = new javax.swing.JComboBox<>();
         txtSoLuong = new javax.swing.JTextField();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtNoiDung = new javax.swing.JTextField();
         pnlAnh = new javax.swing.JPanel();
         lblHinh = new javax.swing.JLabel();
+        txtmatheloai = new javax.swing.JTextField();
         btnMoi = new javax.swing.JButton();
         btnThem = new javax.swing.JButton();
         btnSua = new javax.swing.JButton();
@@ -85,12 +300,16 @@ public class QuanLySach extends javax.swing.JFrame {
 
         jLabel9.setText("Nội Dung");
 
-        cboTheLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jScrollPane1.setViewportView(txtNoiDung);
 
+        pnlAnh.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
         lblHinh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblHinh.setText("Hình");
+        lblHinh.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblHinhMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlAnhLayout = new javax.swing.GroupLayout(pnlAnh);
         pnlAnh.setLayout(pnlAnhLayout);
@@ -129,7 +348,6 @@ public class QuanLySach extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                     .addComponent(txtSoLuong)
-                    .addComponent(cboTheLoai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtTacGia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
@@ -137,7 +355,8 @@ public class QuanLySach extends javax.swing.JFrame {
                             .addComponent(txtTenSach, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtMaSach, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(18, 18, 18)
-                        .addComponent(pnlAnh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(pnlAnh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtmatheloai))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -165,7 +384,7 @@ public class QuanLySach extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(cboTheLoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtmatheloai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -309,9 +528,9 @@ public class QuanLySach extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnIn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(86, 538, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(367, 367, 367)
                         .addComponent(btnQuanLy)))
@@ -363,26 +582,61 @@ public class QuanLySach extends javax.swing.JFrame {
 
     private void btnQuanLyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuanLyActionPerformed
         // TODO add your handling code here:
+        QuanLyUI qlui = new QuanLyUI();
+        qlui.setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnQuanLyActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
+        timKiemTheoTen();
+        clear();
+
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoiActionPerformed
         // TODO add your handling code here:
+        txtMaSach.setText("");
+        txtNXB.setText("");
+        txtmatheloai.setText("");
+        txtNoiDung.setText("");
+        txtSearch.setText("");
+        txtSoLuong.setText("");
+        txtTacGia.setText("");
+        txtTenSach.setText("");
+        txtMaSach.setEnabled(true);
+        btnThem.setEnabled(true);
+        btnSua.setEnabled(false);
+        btnXoa.setEnabled(false);
+        lblHinh.setIcon(null);
     }//GEN-LAST:event_btnMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
+        check();
+        if (flag == true) {
+            insert();
+            load();
+            txtMaSach.setText("");
+            txtNXB.setText("");
+            txtmatheloai.setText("");
+            txtNoiDung.setText("");
+            txtSoLuong.setText("");
+            txtTacGia.setText("");
+            txtTenSach.setText("");
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
+        update();
+        load();
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         // TODO add your handling code here:
+        delete();
+        load();
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInActionPerformed
@@ -395,11 +649,24 @@ public class QuanLySach extends javax.swing.JFrame {
 
     private void tblBangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBangMouseClicked
         // TODO add your handling code here:
+        int row = tblBang.getSelectedRow();
+        MouseClicked(row);
+        txtMaSach.setEnabled(false);
+        btnThem.setEnabled(true);
+        btnThem.setEnabled(false);
+        btnSua.setEnabled(true);
+        btnXoa.setEnabled(true);
+
     }//GEN-LAST:event_tblBangMouseClicked
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSearchKeyReleased
+
+    private void lblHinhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHinhMouseClicked
+        // TODO add your handling code here:
+        Uphinh();
+    }//GEN-LAST:event_lblHinhMouseClicked
 
     /**
      * @param args the command line arguments
@@ -443,7 +710,6 @@ public class QuanLySach extends javax.swing.JFrame {
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
-    private javax.swing.JComboBox<String> cboTheLoai;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -470,5 +736,6 @@ public class QuanLySach extends javax.swing.JFrame {
     private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTacGia;
     private javax.swing.JTextField txtTenSach;
+    private javax.swing.JTextField txtmatheloai;
     // End of variables declaration//GEN-END:variables
 }
